@@ -104,4 +104,4 @@ def test_cross_product_is_perpendicular_to_both_inputs():
     b = Vec3(4,5,6)
     c = a.cross(b)
     assert a.dot(c) == pytest.approx(0)
-    assert a.dot(c) == pytest.approx(0)
+    assert a.dot(c) == b.dot(c)

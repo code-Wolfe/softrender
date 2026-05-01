@@ -110,6 +110,26 @@ def test_translation():
     assert result.y == -2
     assert result.z == 3
 
+def test_rotating_90deg_around_x_turns_y_into_z():
+    rotated = Mat4.rotation_x(math.pi / 2).transform(Vec3(0, 1, 0))
+    assert rotated.x == pytest.approx(0)
+    assert rotated.y == pytest.approx(0)
+    assert rotated.z == pytest.approx(1)
+
+def test_rotating_90deg_around_y_turns_x_into_negative_z():
+    rotated = Mat4.rotation_y(math.pi / 2).transform(Vec3(1, 0, 0))
+    assert rotated.x == pytest.approx(0)
+    assert rotated.y == pytest.approx(0)
+    assert rotated.z == pytest.approx(-1)
+
+def test_translation_then_rotation_differs_from_rotation_then_translation():
+    v = Vec3(1, 0, 0)
+    t = Mat4.translation(5, 0, 0)
+    r = Mat4.rotation_y(math.pi / 2)
+    tr = (t @ r).transform(v)
+    rt = (r @ t).transform(v)
+    assert tr.x != pytest.approx(rt.x) or tr.y != pytest.approx(rt.y) or tr.z != pytest.approx(rt.z)
+
 def test_chaining_equals_sequential_transform():
     scale_x = Mat4([
         [2, 0, 0, 0],
