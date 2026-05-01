@@ -14,10 +14,13 @@ A software 3D renderer built from scratch in Python — no GPU, no game engine, 
 
 | Key | Action |
 |-----|--------|
-| `W` / `S` | Move camera closer / farther |
-| `←` / `→` | Rotate around Y axis |
-| `↑` / `↓` | Rotate around X axis |
-| `Q` / `E` | Rotate around Z axis |
+| `W` / `S` | Move forward / backward |
+| `A` / `D` | Strafe left / right |
+| `Space` / `Shift` | Move up / down |
+| `←` / `→` | Look left / right (yaw) |
+| `↑` / `↓` | Look up / down (pitch) |
+
+A HUD in the top-left shows current eye position, yaw, and pitch.
 
 ## Project Structure
 
@@ -25,8 +28,7 @@ A software 3D renderer built from scratch in Python — no GPU, no game engine, 
 src/
   linalg/    # Vec3, Mat4 — vectors, matrices, transforms
   geometry/  # Mesh, primitive shapes (cube, ...)
-  camera/    # Camera model
-  render/    # Perspective projection, wireframe drawing
+  render/    # Camera, perspective projection, wireframe drawing
 main.py      # Entry point
 ```
 
