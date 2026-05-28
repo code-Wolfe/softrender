@@ -64,7 +64,7 @@ def main():
         if keys[pygame.K_s]:
             eye = eye - forward * MOVE_SPEED
         if keys[pygame.K_a]:
-            eye = eye + right * MOVE_SPEED   # we'll discuss this sign below
+            eye = eye + right * MOVE_SPEED   
         if keys[pygame.K_d]:
             eye = eye - right * MOVE_SPEED
         if keys[pygame.K_SPACE]:

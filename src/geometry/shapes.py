@@ -27,4 +27,23 @@ def cube(size: float = 1.0) -> Mesh:
         (0, 4), (1, 5), (2, 6), (3, 7),
     ]
 
-    return Mesh(vertices, edges)
+    # 12 triangular faces — 2 per cube side.
+    # Each triple is wound counter-clockwise as seen from OUTSIDE the cube,
+    # so (p1-p0) x (p2-p0) points outward. Both triangles of a side fan
+    # from the same first corner, so they share that side's winding.
+    faces = [
+        # Front face (z = +s), outward normal +z
+        (4, 5, 6), (4, 6, 7),
+        # Back face (z = -s), outward normal -z
+        (1, 0, 3), (1, 3, 2),
+        # Right face (x = +s), outward normal +x
+        (1, 2, 6), (1, 6, 5),
+        # Left face (x = -s), outward normal -x
+        (0, 4, 7), (0, 7, 3),
+        # Top face (y = +s), outward normal +y
+        (3, 7, 6), (3, 6, 2),
+        # Bottom face (y = -s), outward normal -y
+        (0, 1, 5), (0, 5, 4),
+    ]
+
+    return Mesh(vertices, edges, faces)

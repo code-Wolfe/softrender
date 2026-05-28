@@ -58,15 +58,47 @@ def draw_line(screen, start: Vec3, end: Vec3, color=(255, 255, 255)):
     if x1 >= 0 and x2 >= 0:
         pygame.draw.line(screen, color, (x1, y1), (x2, y2), 2)
 
+def face_normal(v0: Vec3, v1: Vec3, v2: Vec3) -> Vec3:
+    """
+    Return the normal of the triangle (v0, v1, v2).
+
+    For vertices wound counter-clockwise as seen from the side the
+    normal should point toward, (v1 - v0) x (v2 - v0) points outward.
+    The result is NOT normalized -- back-face culling only checks the
+    sign of normal.z, so unit length isn't needed here.
+    """
+    return (v1 - v0).cross(v2 - v0)
+
 def draw_mesh(screen, mesh: Mesh, transform=None, color=(255, 255, 255)):
-    """Draw a mesh as a wireframe.
-    
-    If `transform` is given (a Mat4), each vertex is transformed first.
+    """Draw a mesh as a back-face-culled wireframe.
+
+    If `transform` is given (a Mat4), each vertex is transformed into view
+    space first. Faces whose outward normal points away from the camera
+    are skipped (back-face culling).
     """
     if transform is None:
-        world_vertices = mesh.vertices
+        view_vertices = mesh.vertices
     else:
-        world_vertices = [transform.transform(v) for v in mesh.vertices]
+        view_vertices = [transform.transform(v) for v in mesh.vertices]
 
-    for i, j in mesh.edges:
-        draw_line(screen, world_vertices[i], world_vertices[j], color)
+    for i0, i1, i2 in mesh.faces:
+        v0 = view_vertices[i0]
+        v1 = view_vertices[i1]
+        v2 = view_vertices[i2]
+
+        # Back-face cull: the camera looks down +Z, so a face whose
+        # outward normal also has +Z points away from the camera.
+        normal = face_normal(v0, v1, v2)
+        if normal.dot(v0) > 0:
+            continue
+
+        # Project the three view-space vertices to pixel coordinates.
+        p0 = project(v0)
+        p1 = project(v1)
+        p2 = project(v2)
+
+        # Skip the whole face if any vertex is behind the camera.
+        if p0[0] < 0 or p1[0] < 0 or p2[0] < 0:
+            continue
+
+        pygame.draw.polygon(screen, color, [p0, p1, p2], width=1)
